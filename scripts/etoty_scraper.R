@@ -270,8 +270,41 @@ all_results <- bind_rows(all_results_list) |>
   ) |>
   ungroup()
 
+convert_gps <- function(gps) {
+  if (is.na(gps) || gps == "") return(c(NA, NA))
+  
+  parts <- str_split(gps, ",\\s*")[[1]]
+  
+  convert_part <- function(part) {
+    nums <- str_extract_all(part, "[0-9.]+")[[1]]
+    
+    if (length(nums) < 3) return(NA)
+    
+    deg <- as.numeric(nums[1])
+    min <- as.numeric(nums[2])
+    sec <- as.numeric(nums[3])
+    
+    dec <- deg + min/60 + sec/3600
+    
+    if (str_detect(part, "S|W")) dec <- -dec
+    dec
+  }
+  
+  lat <- convert_part(parts[1])
+  lon <- convert_part(parts[2])
+  
+  c(lat, lon)
+}
+
+coords <- t(sapply(all_results$gps, convert_gps))
+
+all_results$lat <- coords[, 1]
+all_results$lon <- coords[, 2]
+
 readr::write_excel_csv(
   all_results,
   "data/european_tree_of_the_year_results.csv"
 )
+
+
 
