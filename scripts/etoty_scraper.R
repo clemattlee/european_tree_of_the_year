@@ -42,7 +42,7 @@ get_year_page <- function(year) {
 }
 
 download_cover_photo <- function(img_url,
-                                 dest_folder = "photos",
+                                 dest_folder = "docs/photos",
                                  tree_name = NULL,
                                  year = NULL,
                                  tree_url = NULL) {
@@ -223,7 +223,7 @@ safe_extract_tree_page <- possibly(
 
 
 
-all_years <- 2011:2018
+all_years <- 2011:2026
 all_results_list <- vector("list", length(all_years))
 
 for (i in seq_along(all_years)) {
@@ -305,6 +305,3 @@ readr::write_excel_csv(
   all_results,
   "data/european_tree_of_the_year_results.csv"
 )
-
-
-
